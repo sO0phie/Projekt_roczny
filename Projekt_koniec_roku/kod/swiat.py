@@ -1,4 +1,5 @@
 import random
+from kod import funkcje
 
 class Przyjazny_mob:
     def __init__(self):
@@ -8,17 +9,22 @@ class Przyjazny_mob:
 class Kurczak(Przyjazny_mob):
     def __init__(self):
         super().__init__()
+        self.name = "kurczak"
         self.loot = "kurczak"
-    def dzwiek(self):
-        print("Kukuryku")
 
-# class Kurczak(Przyjazny_mob):
-#     def __init__(self):
-#         super().__init__()
-#         self.loot = "kurczak"
-#     def dzwiek(self):
-#         print("")
-
-class Swiat:
+class Krowa(Przyjazny_mob):
     def __init__(self):
-        pass
+        super().__init__()
+        self.name = "krowa"
+        self.loot = "wołowina"
+
+def swiat():
+    mob_choice = random.randint(1, 3)
+    if mob_choice == 1:
+        znalezione = funkcje.spawn_chance(Kurczak)
+        if znalezione:
+            funkcje.polowanie(znalezione, znalezione[0].xp, znalezione[0].loot, "kurczak")
+    else:
+        znalezione = funkcje.spawn_chance(Krowa)
+        if znalezione:
+            funkcje.polowanie(znalezione, znalezione[0].xp, znalezione[0].loot, "krowa")
