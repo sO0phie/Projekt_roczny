@@ -5,21 +5,15 @@ import time
 def spawn_chance(klasa) -> list:
     szansa = random.randint(1, 3)
     if szansa == 2:
-        ilosc = random.randint(1, 2)
         mobs = []
-        for _ in range(ilosc):
-            mob = klasa()
-            mobs.append(mob)
-        print(f"Spotkałeś {ilosc} {mob.name}")
+        mob = klasa()
+        mobs.append(mob)
+        print(f"Spotkałeś {mob.name}")
         return mobs
-    print("Nikogo nie spotkałeś!")
     return []
 
 
 def polowanie(mobs, xp, loot, nazwa):
-    if not mobs:
-        print("Brak mobów do upolowania.")
-        return
     wybor = input(f"Czy chcesz upolować {nazwa}? ")
     if wybor != "tak":
         return
@@ -28,8 +22,18 @@ def polowanie(mobs, xp, loot, nazwa):
         print(f"Hp moba : {mobs[0].hp}, twój atak {hero['atk']}")
         mobs[0].hp -= hero["atk"]
         if mobs[0].hp <= 0:
-            a = random.randint(1, 2)
-            print(f"Zabiłeś {nazwa}! Zdobywasz {xp} xp i {a} {loot}")
+            print(f"Zabiłeś {nazwa}! Zdobywasz {xp} xp i {loot}")
             hero["xp"] += xp
-            hero["inventory"].append(a*loot)
+            hero["inventory"].append(loot)
             mobs.pop(0)
+
+def if_miecz(required_xp, in_inventory) -> bool:
+    if hero["xp"] < required_xp:
+        print("Masz za mało xp!")
+        return False
+    elif in_inventory in hero["inventory"]:
+        print("Masz już ten miecz!")
+        return False
+    else:
+        return True
+        
