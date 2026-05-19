@@ -3,6 +3,13 @@ from kod import funkcje
 from kod.statystyki import hero
 import time
 
+wioska_found = False
+wioska = None
+working_portal = False
+portal = None
+loot_after_trade = ["mikstura siły", "złoto", "obsydian", "krzesiwo", "perła", "jabłko", "tort", "chleb", "barszcz", "jagoda"]
+shopping_items = ["złote jabłko", "mikstura zdrowia", "perła", "płomienny patyk", "żelazny miecz", "diamentowy miecz"]
+
 class Przyjazny_mob:
     def __init__(self):
         self.hp = random.randint(4, 8)
@@ -31,7 +38,7 @@ class Budynek:
 
 class Blacksmith(Budynek):
     def __init__(self):
-        super().__init__("kuźnia")
+        super().__init__("kuznia")
     def zakup(self):
         print("Weszłeś do kuzni, tutaj możesz kupić miecz który zwiększy twój atak ")
         inp = input("Czy chcesz coś kupić? ")
@@ -64,21 +71,53 @@ class Blacksmith(Budynek):
         else:
             print("Wychodzisz z kuzni")
 
+class Market(Budynek):
+    def __init__(self):
+        super().__init__("rynek")
+    def usability(self):
+        inp = input("Witaj na rynku, tutaj możesz zamienić zdobyty łup na inne przedmioty lub go sprzedać, h - handel, s - sprzedaż, sh - sklep ")
+        if inp == "h":
+            funkcje.trade(hero["inventory"],loot_after_trade[random.randint(0, len(loot_after_trade) - 1)] )
+        elif inp == "s":
+            funkcje.sell(hero["inventory"])
+        elif inp == "sh":
+            funkcje.shopping(hero["monety"], hero["inventory"], shopping_items)
+
 class Village():
-    def __init__(self, name, kuznia:Blacksmith):
+    def __init__(self, name, kuznia:Blacksmith, rynek:Market):
         self.name = name
         self.kuznia = kuznia
+        self.rynek = rynek
     def use(self):
-        global wioska_found
-        wioska_found = True
-        print("=="*20)
+        print("=="*30)
         print("Znalazłeś wioskę, tutaj możesz handlować z lokalnymi mieszkańcami oraz zdobyć pottrzebne materiały ")
         time.sleep(1)
-        inp = input("Gdzie chcesz pójść? k - kuznia ")
+        inp = input("Gdzie chcesz pójść? k - kuznia, r - rynek ")
         if inp == "k":
             self.kuznia.zakup()
+        elif inp == "r":
+            self.rynek.usability()
+
+class Zniszczony_portal(Budynek):
+    def __init__(self, name):
+        super().__init__(name)
+    def portal(self):
+        if funkcje.odbudowa(hero["inventory"]) == True:
+            global working_portal
+            working_portal = True
+            global portal
+            portal = self
+            print("Portal został naprawiony! Możesz teraz wejść do portalu.")
+    def functionable(self):
+        print("Portal działa!")
+        inp = input("Czy chcesz przejść przez portal? ")
+        if inp == "tak":
+            print("Przekraczasz portal i trafiasz do nowego świata...")
+        else:
+            print("Pozostajesz przy portalu.")
+
 def swiat():
-    event_choice = random.randint(1, 5)
+    event_choice = random.randint(1, 10)
     if event_choice == 1:
         znalezione = funkcje.spawn_chance(Kurczak)
         if znalezione:
@@ -87,9 +126,16 @@ def swiat():
         znalezione = funkcje.spawn_chance(Krowa)
         if znalezione:
             funkcje.polowanie(znalezione, znalezione[0].xp, znalezione[0].loot, "krowa")
-    elif event_choice == 5 and wioska_found == False:
+    elif event_choice == 5:
+        global wioska_found
+        wioska_found = True
+        global wioska
         k = Blacksmith()
-        wioska = Village("wioska", k)
+        r = Market()
+        wioska = Village("wioska", k, r)
         wioska.use()
+    elif event_choice == 9:
+        nether_portal = Zniszczony_portal("portal")
+        nether_portal.portal()
     else:
         print("Nic nie widać na drodze")
