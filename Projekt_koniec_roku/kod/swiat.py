@@ -2,11 +2,14 @@ import random
 from kod import funkcje
 from kod.statystyki import hero
 import time
+from kod import pieklo
 
 wioska_found = False
 wioska = None
 working_portal = False
 portal = None
+nether_active = False
+nether = None
 loot_after_trade = ["mikstura siły", "złoto", "obsydian", "krzesiwo", "perła", "jabłko", "tort", "chleb", "barszcz", "jagoda"]
 shopping_items = ["złote jabłko", "mikstura zdrowia", "perła", "płomienny patyk", "żelazny miecz", "diamentowy miecz"]
 
@@ -102,17 +105,21 @@ class Zniszczony_portal(Budynek):
     def __init__(self, name):
         super().__init__(name)
     def portal(self):
-        if funkcje.odbudowa(hero["inventory"]) == True:
+        if funkcje.odbudowa(hero["inventory"], hero["xp"]) == True:
             global working_portal
             working_portal = True
             global portal
             portal = self
-            print("Portal został naprawiony! Możesz teraz wejść do portalu.")
     def functionable(self):
         print("Portal działa!")
         inp = input("Czy chcesz przejść przez portal? ")
         if inp == "tak":
             print("Przekraczasz portal i trafiasz do nowego świata...")
+            global nether_active
+            nether_active = True
+            global nether
+            nether = self
+            pieklo.nether()
         else:
             print("Pozostajesz przy portalu.")
 
