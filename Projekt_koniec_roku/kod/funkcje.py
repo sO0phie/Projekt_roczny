@@ -90,26 +90,55 @@ def shopping(money, inventory ,items):
     else:
         print("Taka rzecz nie jest jeszcze sprzedawana w sklepie!")
 
-def odbudowa(inventory) -> bool:
+def odbudowa(inventory, xp) -> bool:
     print(f"Znalazłeś zniszczony portal! Żeby móc teleportować się do innego świata potrzebujesz obsydianu oraz krzesiwo!")
     if "obsydian" in inventory and "krzesiwo" in inventory:
-        inp = input("Czy chcesz odbudować portal? ")
-        if inp == "tak":
-            for el in inventory:
-                if el == "obsydian":
-                    inventory.remove("obsydian")
-            print("Portal odbudowany! Teraz możesz odkrywać inny świat po drugiej stronie portalu!")
-            return True
+        if xp >= 20 and "kamienny miecz" in inventory:
+            inp = input("Czy chcesz odbudować portal? ")
+            if inp == "tak":
+                for el in inventory:
+                    if el == "obsydian":
+                        inventory.remove("obsydian")
+                print("Portal odbudowany! Teraz możesz odkrywać inny świat po drugiej stronie portalu!")
+                return True
+            print("Jak chcesz, jest to bardzo przydatna struktura w świecie!")
+            return False
+        print("Masz za mało doświadczenia!")
+        return False
     print("Coś poszło nie tak i odchodzisz od portalu")
     return False
 
-def if_miecz(required_xp, in_inventory) -> bool:
-    if hero["xp"] < required_xp:
-        print("Masz za mało xp!")
-        return False
-    elif in_inventory in hero["inventory"]:
-        print("Masz już ten miecz!")
-        return False
+def walka_z_hoglinem(Hoglin):
+    inp = input("Uważaj, biegnie do ciebie hoglin, w - walka, u - ucieczka (szansa ucieczki 50%) ")
+    hoglin = Hoglin("Hoglin", random.randint(1, 3), 10, "wieprzowina")
+    if inp == "u":
+        szansa = random.randint(1, 2)
+        if szansa == 1:
+            print("Nie udało się tobie uciec!")
+            while hero["hp"] > 0 and hoglin.hp > 0:
+                hoglin.bitwa()
+        elif szansa == 2:
+            print("Dzisiaj szczęście jest na twojej stronie! Udało ci się uciec!")
+    elif inp == "w":
+        while hero["hp"] > 0 and hoglin.hp > 0:
+            hoglin.bitwa()
+        if hoglin.hp <= 0:
+            a = random.randint(1, 6)
+            hero["inventory"].append(hoglin.loot)
+            hero["xp"] += a
+            print(f"Udało ci się go pokonać! Zdobywasz {hoglin.loot} oraz {a} xp!")
+
+def add_health(inventory, hp):
+    if "kurczak" in inventory or "wieprzowina" in inventory or "wołowina" in inventory or "wieprzowina" in inventory or "jabłko" in inventory or "tort" in inventory or "chleb" in inventory or "barszcz" in inventory or "jagoda" in inventory or "złote jabłko" in inventory or "mikstura zdrowia" in inventory:
+        inp = input(f"Jakie jedzenie chcesz zjeść żeby się uleczyć? {inventory} ")
+        if inp in inventory:
+            if inp == "kurczak" or inp == "wieprzowina" or inp == "wołowina" or inp == "wieprzowina" or inp == "jabłko" or inp == "tort" or inp == "chleb" or inp == "barszcz" or inp == "jagoda" or inp == "złote jabłko" or inp == "mikstura zdrowia":
+                inventory.remove(inp)
+                hp += random.randint(2, 4)
+                print(f"Uleczyłeś się! Teraz twoje hp wynosi {hp}")
+            else:
+                print("Wprowadzona rzecz nie jest jedzeniem!")
+        else:
+            print("Takiego jedzenia nie ma w twoim inventory!")
     else:
-        return True
-        
+        print("W twoim inventory nie ma żadnego jedzenia!")
