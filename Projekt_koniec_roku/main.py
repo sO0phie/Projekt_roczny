@@ -1,6 +1,7 @@
 from kod import statystyki
 from kod import swiat
 from kod.statystyki import hero
+from kod import funkcje
 import time
 
 print("Każda historia zaczyna się od pojawienia się bohatera....")
@@ -11,11 +12,11 @@ print(f"Znakomicie! Zatem {statystyki.hero['imie']} idz w świat!")
 
 while statystyki.hero['hp'] > 0:
     if swiat.wioska_found and swiat.working_portal:
-        czynnosc = input("Co chcesz zrobić? a - podróż, b - wgląd do inventory, c - wyświetl swoje statystyki, d - odwiedź wioskę, p - portal ")
+        czynnosc = input("Co chcesz zrobić? a - podróż, b - wgląd do inventory, c - wyświetl swoje statystyki, e - heal, d - odwiedź wioskę, p - portal ")
     elif swiat.wioska_found:
-        czynnosc = input("Co chcesz zrobić? a - podróż, b - wgląd do inventory, c - wyświetl swoje statystyki, d - odwiedź wioskę ")
+        czynnosc = input("Co chcesz zrobić? a - podróż, b - wgląd do inventory, c - wyświetl swoje statystyki, e - heal, d - odwiedź wioskę ")
     elif swiat.working_portal:
-        czynnosc = input("Co chcesz zrobić? a - podróż, b - wgląd do inventory, c - wyświetl swoje statystyki, p - portal ")
+        czynnosc = input("Co chcesz zrobić? a - podróż, b - wgląd do inventory, c - wyświetl swoje statystyki, e - heal, p - portal ")
     else:
         czynnosc = input("Co chcesz zrobić? a - podróż, b - wgląd do inventory, c - wyświetl swoje statystyki ")
     if czynnosc == "a":
@@ -35,6 +36,8 @@ while statystyki.hero['hp'] > 0:
         for k, v in hero.items():
             time.sleep(1)
             print(f"{k} ----- {v}")
+    elif czynnosc == "e":
+        funkcje.add_health(hero["inventory"])
     elif czynnosc == "d":
         if swiat.wioska_found == True and swiat.wioska is not None:
             swiat.wioska.use()
@@ -45,5 +48,7 @@ while statystyki.hero['hp'] > 0:
             swiat.portal.functionable()
         else:
             print("Portal nie jest dostępny.")
+    else:
+        print("Wpisano niepoprawną komendę")
 else:
     print("Nie zostało tobie życia, koniec gry!")
