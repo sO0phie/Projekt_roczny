@@ -92,8 +92,8 @@ class Village():
         self.kuznia = kuznia
         self.rynek = rynek
     def use(self):
-        print("=="*30)
-        print("Znalazłeś wioskę, tutaj możesz handlować z lokalnymi mieszkańcami oraz zdobyć pottrzebne materiały ")
+        print("=="*50)
+        print("Znalazłeś wioskę, tutaj możesz handlować z lokalnymi mieszkańcami oraz zdobyć potrzebne materiały ")
         time.sleep(1)
         inp = input("Gdzie chcesz pójść? k - kuznia, r - rynek ")
         if inp == "k":
@@ -111,7 +111,6 @@ class Zniszczony_portal(Budynek):
             global portal
             portal = self
     def functionable(self):
-        print("Portal działa!")
         inp = input("Czy chcesz przejść przez portal? ")
         if inp == "tak":
             print("Przekraczasz portal i trafiasz do nowego świata...")
@@ -119,7 +118,10 @@ class Zniszczony_portal(Budynek):
             nether_active = True
             global nether
             nether = self
-            pieklo.nether()
+            while pieklo.nether() == True and nether_active == True:
+                pieklo.nether()
+            print("Wychodzisz z netheru! ")
+            
         else:
             print("Pozostajesz przy portalu.")
 
